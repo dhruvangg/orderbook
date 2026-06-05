@@ -19,7 +19,10 @@ export function decompressPayload(compressed: string): OrderPayload | null {
 export function generateShareUrl(payload: OrderPayload): string {
   const compressed = compressPayload(payload);
   const base = window.location.origin;
-  return `${base}/shop?data=${compressed}`;
+  const basePath = import.meta.env.BASE_URL || '/';
+  // Remove trailing slash from basePath to avoid double slashes
+  const cleanBase = basePath.endsWith('/') ? basePath.slice(0, -1) : basePath;
+  return `${base}${cleanBase}/shop?data=${compressed}`;
 }
 
 export function generateWhatsAppUrl(phone: string, message: string): string {

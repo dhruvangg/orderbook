@@ -9,7 +9,7 @@
     "qty": "Qty",
     "unit": "Unit",
     "addItem": "Add Item",
-    "whatsappNumber": "Shopkeeper WhatsApp Number",
+    "whatsappNumber": "Your WhatsApp Number",
     "whatsappPlaceholder": "91XXXXXXXXXX",
     "shareWithShop": "Share with Shopkeeper",
     "showQR": "Show QR Code",
@@ -20,7 +20,7 @@
     "removeItem": "Remove item",
     "phoneSaved": "Phone number saved",
     "linkCopied": "Link copied to clipboard",
-    "shareError": "Please add items and enter shopkeeper's WhatsApp number",
+    "shareError": "Please add items and enter your WhatsApp number",
     "copyLink": "Copy Link",
     "close": "Close"
   },

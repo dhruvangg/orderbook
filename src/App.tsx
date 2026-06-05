@@ -4,9 +4,11 @@ import { CustomerPage } from '@/features/customer/CustomerPage';
 import { ShopkeeperPage } from '@/features/shopkeeper/ShopkeeperPage';
 import { AboutPage } from '@/features/about/AboutPage';
 
+const BASE_PATH = import.meta.env.BASE_URL;
+
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={BASE_PATH}>
       <Routes>
         <Route path="/" element={<CustomerPage />} />
         <Route path="/shop" element={<ShopkeeperPage />} />

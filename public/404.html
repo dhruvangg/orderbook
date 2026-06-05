@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>OrderBook - Redirecting...</title>
+    <script>
+      // GitHub Pages SPA fallback
+      // When a user refreshes on /orderbook/shop?data=..., GitHub returns 404.
+      // This script redirects to index.html while preserving the full path and query string.
+      // The app's client-side router then handles the route correctly.
+      var pathSegmentsToKeep = 1; // Keep '/orderbook' segment
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
+    </script>
+  </head>
+  <body>
+    Redirecting...
+  </body>
+</html>

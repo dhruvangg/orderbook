@@ -15,6 +15,12 @@ export function toast(message: string, type: 'success' | 'error' | 'info' = 'suc
   listeners.forEach((fn) => fn(t));
 }
 
+const BG_COLORS = {
+  success: '#16a34a',
+  error: '#ef4444',
+  info: '#3f3f46',
+};
+
 export function Toaster() {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
@@ -35,17 +41,33 @@ export function Toaster() {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 w-[90vw] max-w-sm">
+    <div
+      style={{
+        position: 'fixed',
+        bottom: '16px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 100,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+        width: '90vw',
+        maxWidth: '360px',
+      }}
+    >
       {toasts.map((t) => (
         <div
           key={t.id}
-          className={`px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white animate-in slide-in-from-bottom-2 fade-in duration-200 ${
-            t.type === 'error'
-              ? 'bg-red-500'
-              : t.type === 'info'
-                ? 'bg-zinc-700'
-                : 'bg-green-600'
-          }`}
+          style={{
+            padding: '12px 16px',
+            borderRadius: '10px',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+            fontSize: '14px',
+            fontWeight: 500,
+            color: '#ffffff',
+            backgroundColor: BG_COLORS[t.type || 'success'],
+            animation: 'slide-in-from-bottom-2 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          }}
         >
           {t.message}
         </div>
