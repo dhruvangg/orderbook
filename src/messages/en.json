@@ -1,0 +1,87 @@
+{
+  "app": {
+    "name": "OrderBook",
+    "tagline": "Grocery orders made simple"
+  },
+  "customer": {
+    "title": "OrderBook",
+    "item": "Item",
+    "qty": "Qty",
+    "unit": "Unit",
+    "addItem": "Add Item",
+    "whatsappNumber": "Shopkeeper WhatsApp Number",
+    "whatsappPlaceholder": "91XXXXXXXXXX",
+    "shareWithShop": "Share with Shopkeeper",
+    "showQR": "Show QR Code",
+    "qrTitle": "Scan to open order",
+    "qrDescription": "Shopkeeper can scan this QR code to open your order and enter prices.",
+    "emptyList": "Your list is empty. Add items to get started.",
+    "enterItemName": "Enter item name",
+    "removeItem": "Remove item",
+    "phoneSaved": "Phone number saved",
+    "linkCopied": "Link copied to clipboard",
+    "shareError": "Please add items and enter shopkeeper's WhatsApp number",
+    "copyLink": "Copy Link",
+    "close": "Close"
+  },
+  "shop": {
+    "title": "Customer Order",
+    "item": "Item",
+    "qty": "Qty",
+    "unit": "Unit",
+    "price": "Price (₹)",
+    "total": "Total",
+    "sendInvoice": "Send Invoice via WhatsApp",
+    "noData": "No order data found. Ask the customer to share a new link.",
+    "enterPrice": "0",
+    "invoiceSent": "Opening WhatsApp..."
+  },
+  "invoice": {
+    "title": "Invoice Preview",
+    "total": "Total",
+    "noItems": "No invoice data available.",
+    "sendWhatsApp": "Send via WhatsApp",
+    "back": "Back to Order"
+  },
+  "about": {
+    "title": "About OrderBook",
+    "description": "OrderBook is a simple tool for creating grocery shopping lists and sharing them with local shopkeepers.",
+    "howItWorks": "How it works",
+    "step1": "Customer creates a grocery list with items, quantities, and units.",
+    "step2": "Share the list with the shopkeeper via WhatsApp or QR code.",
+    "step3": "Shopkeeper enters prices for each item.",
+    "step4": "Shopkeeper sends an itemized invoice back via WhatsApp.",
+    "privacy": "Privacy",
+    "privacyText": "OrderBook runs entirely in your browser. No data is sent to any server. Your grocery lists and phone numbers are stored only on your device.",
+    "version": "Version 1.0.0",
+    "madeWith": "Made with ❤️ for local businesses"
+  },
+  "menu": {
+    "language": "Language",
+    "about": "About",
+    "privacy": "Privacy Policy",
+    "clearList": "Clear Current List",
+    "clearConfirm": "Are you sure you want to clear all items?",
+    "yes": "Yes, Clear",
+    "cancel": "Cancel",
+    "cleared": "List cleared"
+  },
+  "units": {
+    "kg": "kg",
+    "g": "g",
+    "ltr": "ltr",
+    "ml": "ml",
+    "pcs": "pcs",
+    "pack": "pack",
+    "dozen": "dozen"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "OrderBook respects your privacy completely.",
+    "point1": "No data is collected or sent to any server.",
+    "point2": "All data stays in your browser's local storage.",
+    "point3": "Phone numbers are stored locally only for your convenience.",
+    "point4": "Order data is shared only through the URL you generate.",
+    "point5": "No cookies, no tracking, no analytics."
+  }
+}
