@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { QRCodeSVG } from 'qrcode.react';
 import { Plus, Trash2, Share2, QrCode, Copy } from 'lucide-react';
@@ -20,7 +20,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { toast } from '@/components/ui/toast';
-import { saveItems, loadItems, savePhone, loadPhone } from '@/lib/storage';
+import { saveItems, loadItems, savePhone, loadPhone, getStorageType } from '@/lib/storage';
 import { generateShareUrl } from '@/lib/sharing';
 import type { OrderItem, Unit } from '@/types';
 
@@ -57,6 +57,28 @@ export function CustomerPage() {
     }
   }, [phone]);
 
+  // Check for private mode / storage fallback warning
+  useEffect(() => {
+    if (getStorageType() !== 'localStorage') {
+      toast(t('customer.storageWarning'), 'warning');
+    }
+  }, [t]);
+
+  const currentUrlLength = useMemo(() => {
+    const validItems = items.filter((item) => item.name.trim() !== '');
+    if (validItems.length === 0 || !phone.trim()) return 0;
+    const payload = {
+      customerPhone: phone.trim(),
+      items: validItems.map(({ name, qty, unit }) => ({ name, qty, unit })),
+    };
+    try {
+      const url = generateShareUrl(payload);
+      return url.length;
+    } catch {
+      return 0;
+    }
+  }, [items, phone]);
+
   const updateItem = useCallback(
     (id: string, field: keyof OrderItem, value: string | number) => {
       setItems((prev) =>
@@ -66,6 +88,26 @@ export function CustomerPage() {
       );
     },
     []
+  );
+
+  const validateQuantity = useCallback(
+    (id: string, val: string) => {
+      let parsed = parseFloat(val);
+      if (isNaN(parsed) || parsed <= 0) {
+        parsed = 1;
+      } else if (parsed > 10000) {
+        parsed = 10000;
+      }
+      updateItem(id, 'qty', parsed);
+    },
+    [updateItem]
+  );
+
+  const validateName = useCallback(
+    (id: string, val: string) => {
+      updateItem(id, 'name', val.trim());
+    },
+    [updateItem]
   );
 
   const addItem = () => {
@@ -84,13 +126,25 @@ export function CustomerPage() {
 
   const buildShareUrl = () => {
     const validItems = getValidItems();
-    if (validItems.length === 0 || !phone.trim()) {
+    if (validItems.length === 0) {
       toast(t('customer.shareError'), 'error');
       return null;
     }
 
+    if (!phone.trim()) {
+      toast(t('customer.phoneRequired'), 'error');
+      return null;
+    }
+
+    const cleanPhone = phone.trim().replace(/[\s()-]/g, '');
+    const phoneRegex = /^\+?[1-9]\d{6,14}$/;
+    if (!phoneRegex.test(cleanPhone)) {
+      toast(t('customer.invalidPhone'), 'error');
+      return null;
+    }
+
     const payload = {
-      customerPhone: phone.trim(),
+      customerPhone: cleanPhone,
       items: validItems.map(({ name, qty, unit }) => ({ name, qty, unit })),
     };
 
@@ -108,8 +162,15 @@ export function CustomerPage() {
           text: t('app.tagline'),
           url,
         });
-      } catch {
-        // User cancelled share
+      } catch (err: any) {
+        if (err && err.name !== 'AbortError') {
+          try {
+            await navigator.clipboard.writeText(url);
+            toast(t('customer.linkCopied'));
+          } catch (clipErr) {
+            console.error('Clipboard copy failed:', clipErr);
+          }
+        }
       }
     } else {
       await navigator.clipboard.writeText(url);
@@ -212,6 +273,7 @@ export function CustomerPage() {
                       onChange={(e) =>
                         updateItem(item.id, 'name', e.target.value)
                       }
+                      onBlur={(e) => validateName(item.id, e.target.value)}
                       placeholder={t('customer.enterItemName')}
                       style={{
                         height: '40px',
@@ -237,6 +299,7 @@ export function CustomerPage() {
                           parseFloat(e.target.value) || 0
                         )
                       }
+                      onBlur={(e) => validateQuantity(item.id, e.target.value)}
                       style={{
                         height: '40px',
                         border: 'none',
@@ -351,10 +414,37 @@ export function CustomerPage() {
             placeholder={t('customer.whatsappPlaceholder')}
             style={{ fontSize: '16px' }}
           />
+          {currentUrlLength > 0 && (
+            <div style={{ marginTop: '8px', fontSize: '12px', color: '#71717a' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>{t('customer.linkLength')}:</span>
+                <span id="url-char-count" style={{ fontWeight: 600, color: currentUrlLength > 2000 ? '#ef4444' : '#16a34a' }}>
+                  {currentUrlLength} / 2000 {t('customer.characters')}
+                </span>
+              </div>
+              {currentUrlLength > 2000 && (
+                <div id="url-length-warning" style={{ 
+                  marginTop: '8px', 
+                  padding: '8px 12px', 
+                  backgroundColor: '#fef2f2', 
+                  border: '1px solid #fee2e2', 
+                  borderRadius: '6px', 
+                  color: '#b91c1c',
+                  display: 'flex',
+                  gap: '6px',
+                  alignItems: 'center'
+                }}>
+                  <span style={{ fontWeight: 600 }}>⚠️</span>
+                  <span>{t('customer.urlTooLongWarning')}</span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Action Buttons - Fixed Bottom */}
         <div
+          className="fixed-bottom-bar"
           style={{
             position: 'fixed',
             bottom: 0,

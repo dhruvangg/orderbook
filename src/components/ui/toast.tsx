@@ -3,13 +3,13 @@ import { useState, useEffect, useCallback } from 'react';
 interface Toast {
   id: string;
   message: string;
-  type?: 'success' | 'error' | 'info';
+  type?: 'success' | 'error' | 'info' | 'warning';
 }
 
 let toastId = 0;
 const listeners: Set<(toast: Toast) => void> = new Set();
 
-export function toast(message: string, type: 'success' | 'error' | 'info' = 'success') {
+export function toast(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'success') {
   const id = String(++toastId);
   const t: Toast = { id, message, type };
   listeners.forEach((fn) => fn(t));
@@ -19,6 +19,7 @@ const BG_COLORS = {
   success: '#16a34a',
   error: '#ef4444',
   info: '#3f3f46',
+  warning: '#ea580c',
 };
 
 export function Toaster() {

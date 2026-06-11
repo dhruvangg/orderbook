@@ -1,0 +1,178 @@
+
+<style>
+  .section { margin-bottom: 1.5rem; }
+  .section-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--border-radius-md); margin-bottom: 8px; cursor: pointer; user-select: none; }
+  .section-header:hover { background: var(--color-background-secondary); }
+  .section-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); flex: 1; }
+  .section-count { font-size: 12px; color: var(--color-text-tertiary); }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+  .badge-red { background: var(--color-background-danger); color: var(--color-text-danger); }
+  .badge-amber { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .badge-green { background: var(--color-background-success); color: var(--color-text-success); }
+  .badge-blue { background: var(--color-background-info); color: var(--color-text-info); }
+  .item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 14px; border-radius: var(--border-radius-md); transition: background .15s; cursor: pointer; }
+  .item:hover { background: var(--color-background-secondary); }
+  .item.done .item-title { text-decoration: line-through; color: var(--color-text-tertiary); }
+  .item.done .item-desc { color: var(--color-text-tertiary); }
+  .checkbox { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--color-border-secondary); flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+  .checkbox.checked { background: var(--color-background-success); border-color: var(--color-border-success); }
+  .checkbox.checked::after { content: '✓'; font-size: 10px; color: var(--color-text-success); font-weight: 700; }
+  .item-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .item-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; margin-top: 2px; }
+  .progress-bar { height: 4px; border-radius: 2px; background: var(--color-border-tertiary); margin: 4px 0 16px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 2px; background: var(--color-text-success); transition: width .3s; }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .top-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); }
+  .top-subtitle { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+  .reset-btn { font-size: 12px; color: var(--color-text-secondary); border: 0.5px solid var(--color-border-secondary); padding: 4px 10px; border-radius: var(--border-radius-md); background: none; cursor: pointer; }
+  .reset-btn:hover { background: var(--color-background-secondary); }
+  .usp-box { background: var(--color-background-success); border: 0.5px solid var(--color-border-success); border-radius: var(--border-radius-md); padding: 10px 14px; margin-bottom: 20px; font-size: 12px; color: var(--color-text-success); }
+</style>
+
+<h2 class="sr-only">OrderBook production readiness checklist — interactive items across 6 categories</h2>
+
+<div class="top-bar">
+  <div>
+    <div class="top-title">Production readiness checklist</div>
+    <div class="top-subtitle" id="progress-text">0 of 28 completed</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">Reset</button>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="usp-box">
+  <i class="ti ti-shield-check" aria-hidden="true"></i> <strong>USP preserved:</strong> No login · No database · No backend — every item below works within these constraints.
+</div>
+
+<div id="checklist"></div>
+
+<script>
+const sections = [
+  {
+    title: "Must-have before launch",
+    badge: "badge-red",
+    badgeText: "Critical",
+    icon: "ti-alert-triangle",
+    items: [
+      { title: "HTTPS deployment", desc: "PWA features (service workers, install prompt) require HTTPS. Use Vercel, Netlify, or Cloudflare Pages — all free and zero-backend." },
+      { title: "PWA manifest & icons", desc: "Complete manifest.json with all icon sizes (72–512px), theme_color, background_color, display: standalone. Test installability on Android/iOS." },
+      { title: "Service worker caching", desc: "Cache all app shell assets so it loads offline. vite-plugin-pwa handles this — verify workbox config covers JS, CSS, fonts, and translation files." },
+      { title: "URL length guard", desc: "lz-string compressed URLs can exceed 2,000 chars and break WhatsApp/SMS link previews. Add a character counter and warn users when the order list is too long." },
+      { title: "WhatsApp number validation", desc: "Validate E.164 format (country code + number) before building wa.me links. Invalid numbers silently open WhatsApp with no contact, confusing users." },
+      { title: "Error boundaries", desc: "Wrap the app in React error boundaries so a crash on one screen (e.g. corrupted localStorage) doesn't blank the entire app." },
+    ]
+  },
+  {
+    title: "Cross-device & browser support",
+    badge: "badge-amber",
+    badgeText: "Important",
+    icon: "ti-device-mobile",
+    items: [
+      { title: "iOS Safari QR share flow", desc: "iOS doesn't support Web Share API for arbitrary URLs the same way Android does. Test the QR + copy-link fallback thoroughly on Safari 16/17." },
+      { title: "Android Chrome install banner", desc: "Test the PWA install prompt on Chrome for Android. Ensure beforeinstallprompt is handled and a custom prompt is shown at the right moment." },
+      { title: "Gujarati font loading", desc: "System fonts on Android often lack full Gujarati glyph support. Specify Noto Sans Gujarati as a web font fallback and test on stock Android." },
+      { title: "Landscape mode layout", desc: "Mobile forms in landscape mode often clip buttons below the virtual keyboard. Test the customer and shopkeeper screens in both orientations." },
+      { title: "Print stylesheet for invoice", desc: "Shopkeepers may want to print the invoice. A basic @media print stylesheet hiding the share buttons costs 20 lines and saves real-world friction." },
+    ]
+  },
+  {
+    title: "Data & state reliability",
+    badge: "badge-amber",
+    badgeText: "Important",
+    icon: "ti-database",
+    items: [
+      { title: "localStorage fallback", desc: "Private/incognito mode and some iOS browsers restrict localStorage. Detect failure and fall back to sessionStorage or in-memory state with a user warning." },
+      { title: "Data versioning", desc: "Add a schema version key to localStorage. When you change data shape in a future release, migrate or clear stale data gracefully instead of crashing." },
+      { title: "URL decode error handling", desc: "If a shared link is truncated (e.g. WhatsApp wraps long URLs), lz-string.decompress returns null. Show a friendly 'link is broken' screen, not a JS exception." },
+      { title: "Unit/quantity input sanitization", desc: "Guard against NaN, negative prices, and absurdly large quantities that inflate the invoice total. Validate on blur, not just on submit." },
+    ]
+  },
+  {
+    title: "Performance & core web vitals",
+    badge: "badge-amber",
+    badgeText: "Important",
+    icon: "ti-gauge",
+    items: [
+      { title: "Bundle analysis & splitting", desc: "Run vite-bundle-visualizer. QR code library + i18n translations + React can easily hit 300 KB gzipped. Lazy-load the shopkeeper route and QR component." },
+      { title: "Translation file splitting", desc: "Load only the active language at startup. Don't bundle all translation files into the main chunk — each is a separate dynamic import." },
+      { title: "Image/icon optimization", desc: "PWA icons and any app images should be WebP with explicit width/height to prevent layout shift (CLS). Use vite-imagetools or squoosh." },
+      { title: "LCP target under 2.5s on 3G", desc: "The shopkeeper likely opens the link on a low-end Android on mobile data. Profile with Lighthouse throttled to Moto G4 / Slow 3G." },
+    ]
+  },
+  {
+    title: "UX & trust signals",
+    badge: "badge-blue",
+    badgeText: "Polish",
+    icon: "ti-star",
+    items: [
+      { title: "Empty state screens", desc: "First-time users see an empty list. Add illustrated empty states that guide users toward the first action — don't show a blank screen." },
+      { title: "Loading states on WhatsApp open", desc: "After clicking 'Send invoice', add a brief visual confirmation before handing off to WhatsApp. Users often tap again thinking it didn't work." },
+      { title: "Privacy notice (vernacular)", desc: "Translate the 'no data leaves your device' promise into Gujarati and show it prominently on first launch. Builds trust with less-technical shopkeepers." },
+      { title: "Link expiry communication", desc: "URLs never expire (they're self-contained), but users don't know this. Add a note: 'This link works forever, no account needed.' Reduces support confusion." },
+      { title: "Long item name truncation", desc: "Very long item names (e.g. pasted from a list) break the invoice layout. Clamp to 2 lines in the UI and truncate in the WhatsApp message string." },
+    ]
+  },
+  {
+    title: "Deployment & observability",
+    badge: "badge-blue",
+    badgeText: "Ops",
+    icon: "ti-settings",
+    items: [
+      { title: "CDN deployment with cache headers", desc: "Deploy to a CDN (Vercel/Netlify/Cloudflare). Set long Cache-Control on hashed assets (JS/CSS) and short/no-cache on index.html." },
+      { title: "Client-side error tracking", desc: "No backend doesn't mean no observability. Add Sentry (free tier) to catch JS exceptions in the wild. Opt-in to error reporting; state that data is anonymous in your privacy note." },
+      { title: "Analytics without cookies", desc: "Plausible or Fathom give page-view + event analytics with no cookies, no GDPR headaches, and no backend. Track 'order created', 'link shared', 'invoice sent' events." },
+      { title: "robots.txt & Open Graph tags", desc: "Add og:title, og:description, og:image so WhatsApp link previews look good when the app URL (not a share link) is sent. Block shopkeeper URLs from indexing with noindex." },
+    ]
+  }
+];
+
+let checked = {};
+
+function render() {
+  const el = document.getElementById('checklist');
+  el.innerHTML = '';
+  let total = 0, done = 0;
+  sections.forEach((sec, si) => {
+    const secDone = sec.items.filter((_, ii) => checked[`${si}-${ii}`]).length;
+    total += sec.items.length;
+    done += secDone;
+    const div = document.createElement('div');
+    div.className = 'section';
+    div.innerHTML = `
+      <div class="section-header">
+        <i class="ti ${sec.icon}" style="font-size:16px;color:var(--color-text-secondary)" aria-hidden="true"></i>
+        <span class="section-title">${sec.title}</span>
+        <span class="badge ${sec.badge}">${sec.badgeText}</span>
+        <span class="section-count">${secDone}/${sec.items.length}</span>
+      </div>
+      ${sec.items.map((item, ii) => {
+        const key = `${si}-${ii}`;
+        const isDone = !!checked[key];
+        return `<div class="item${isDone ? ' done' : ''}" onclick="toggle('${key}')">
+          <div class="checkbox${isDone ? ' checked' : ''}"></div>
+          <div>
+            <div class="item-title">${item.title}</div>
+            <div class="item-desc">${item.desc}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    `;
+    el.appendChild(div);
+  });
+  document.getElementById('progress-text').textContent = `${done} of ${total} completed`;
+  document.getElementById('progress-fill').style.width = `${Math.round(done/total*100)}%`;
+}
+
+function toggle(key) {
+  checked[key] = !checked[key];
+  render();
+}
+
+function resetAll() {
+  checked = {};
+  render();
+}
+
+render();
+</script>

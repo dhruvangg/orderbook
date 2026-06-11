@@ -22,10 +22,19 @@
     "linkCopied": "Link copied to clipboard",
     "shareError": "Please add items and enter your WhatsApp number",
     "copyLink": "Copy Link",
-    "close": "Close"
+    "close": "Close",
+    "linkLength": "Link Length",
+    "characters": "characters",
+    "urlTooLongWarning": "Warning: Link is too long (> 2,000 chars) and may fail to share via WhatsApp. Try removing some items.",
+    "phoneRequired": "Please enter your WhatsApp number",
+    "invalidPhone": "Please enter a valid WhatsApp number with country code (e.g. 919876543210)",
+    "storageWarning": "Private mode detected. Your shopping list will not be saved permanently."
   },
   "shop": {
     "title": "Customer Order",
+    "invoiceTitle": "Invoice",
+    "downloadPdf": "Download PDF",
+    "printInvoice": "Print Invoice",
     "item": "Item",
     "qty": "Qty",
     "unit": "Unit",
@@ -33,6 +42,7 @@
     "total": "Total",
     "sendInvoice": "Send Invoice via WhatsApp",
     "noData": "No order data found. Ask the customer to share a new link.",
+    "brokenLink": "The link you opened seems to be broken or incomplete. Please ask the customer to resend the link.",
     "enterPrice": "0",
     "invoiceSent": "Opening WhatsApp..."
   },
@@ -64,7 +74,8 @@
     "clearConfirm": "Are you sure you want to clear all items?",
     "yes": "Yes, Clear",
     "cancel": "Cancel",
-    "cleared": "List cleared"
+    "cleared": "List cleared",
+    "installApp": "Install App"
   },
   "units": {
     "kg": "kg",

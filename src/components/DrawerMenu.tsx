@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, Globe, Info, Shield, Trash2, ChevronRight } from 'lucide-react';
+import { Menu, X, Globe, Info, Shield, Trash2, ChevronRight, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -22,6 +22,34 @@ export function DrawerMenu() {
   const [visible, setVisible] = useState(false);
 
   const isCustomerPage = location.pathname === '/';
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handleBeforeInstall = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    const handleAppInstalled = () => {
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
 
   // Animate in after mount
   useEffect(() => {
@@ -275,6 +303,38 @@ export function DrawerMenu() {
                   <span style={{ flex: 1 }}>{t('menu.privacy')}</span>
                   <ChevronRight style={{ width: '16px', height: '16px', color: '#d4d4d8' }} />
                 </button>
+
+                {deferredPrompt && (
+                  <button
+                    onClick={handleInstallClick}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '12px 16px',
+                      borderRadius: '10px',
+                      border: 'none',
+                      background: 'transparent',
+                      fontSize: '14px',
+                      color: '#16a34a',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'background-color 0.15s ease',
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.backgroundColor = '#f0fdf4')
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.backgroundColor = 'transparent')
+                    }
+                  >
+                    <Download style={{ width: '18px', height: '18px', color: '#16a34a' }} />
+                    <span style={{ flex: 1 }}>{t('menu.installApp')}</span>
+                    <ChevronRight style={{ width: '16px', height: '16px', color: '#16a34a' }} />
+                  </button>
+                )}
               </div>
 
               {/* Clear List */}

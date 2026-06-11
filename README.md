@@ -7,7 +7,7 @@ A mobile-first Progressive Web Application (PWA) for creating grocery shopping l
 - **Customer Order Creation** - Add items with quantities and units
 - **Share with Shopkeeper** - Via WhatsApp link or QR code
 - **Shopkeeper Pricing** - Enter prices and see running total
-- **WhatsApp Invoice** - Send itemized invoice directly to customer
+- **WhatsApp Invoice** - Send itemized invoice directly to customer THIS SHOULD BE LINK ONLY AND WHATSAPP SHOULD OPEN AUTOMATICALLY AFTER CLICKING ON SEND BUTTON
 - **Multi-language** - English and Gujarati support
 - **Offline Support** - Works without internet (PWA)
 - **No Backend** - Everything runs in the browser

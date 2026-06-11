@@ -25,8 +25,38 @@ export default defineConfig({
         start_url: '/orderbook/',
         icons: [
           {
+            src: 'icons/icon-72.png',
+            sizes: '72x72',
+            type: 'image/png',
+          },
+          {
+            src: 'icons/icon-96.png',
+            sizes: '96x96',
+            type: 'image/png',
+          },
+          {
+            src: 'icons/icon-128.png',
+            sizes: '128x128',
+            type: 'image/png',
+          },
+          {
+            src: 'icons/icon-144.png',
+            sizes: '144x144',
+            type: 'image/png',
+          },
+          {
+            src: 'icons/icon-152.png',
+            sizes: '152x152',
+            type: 'image/png',
+          },
+          {
             src: 'icons/icon-192.png',
             sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'icons/icon-384.png',
+            sizes: '384x384',
             type: 'image/png',
           },
           {
@@ -43,7 +73,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,json}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -82,4 +112,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    port: 3003, // Replace 3000 with your desired port number
+    strictPort: true, // Optional: prevents Vite from trying the next available port if 3000 is occupied
+  }
 })
